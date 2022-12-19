@@ -22,7 +22,7 @@ const createUser = async (req, res) => {
 
 const getSingleUser = async (req, res) => {
     try {
-        const userData = await User.findById(req.params.userId);
+        const userData = await User.findById(req.params.userId).populate('thoughts');
         res.status(200).json(userData);
     }
     catch (err) {
@@ -32,7 +32,7 @@ const getSingleUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-        const UserData = await User.findOneAndUpdate(
+        const userData = await User.findOneAndUpdate(
             { _id: req.params.userId },
             { $set: req.body },
             { runValidators: true, new: true }
@@ -46,7 +46,7 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     try {
-        const userData = await User.findOneDelete({ _id: req.params.userId});
+        const userData = await User.findOneAndDelete({ _id: req.params.userId});
         if (userData) {
             const thoughtData = Thought.deleteMany({ _id: { $in: userData.thoughts} })
             console.log(thoughtData);

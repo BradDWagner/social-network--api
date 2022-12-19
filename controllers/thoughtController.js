@@ -23,11 +23,10 @@ const getSingleThought = async (req, res) => {
 const createThought = async (req, res) => {
     try {
         const thoughtData = await Thought.create(req.body);
-        //TODO: don't forget to push the created thought's _id to the associated user's thoughts array field
-        // const userData = await User.findOneAndUpdate(
-        //     { _id: req.body.userId },
-        //     { $addToSet: { thoughts: thoughtData._id}}
-        // )
+        const userData = await User.findOneAndUpdate(
+            { _id: req.body.userId },
+            { $addToSet: { thoughts: thoughtData._id}}
+        )
         res.status(200).json(thoughtData);
     }
     catch (err) {
@@ -55,7 +54,7 @@ const deleteThought = async (req, res) => {
         if (thoughtData) {
             const userData = await User.findOneAndUpdate(
                 { thoughts: req.params.thoughtId },
-                { $pull: { thoughts: req.params.thougthId } },
+                { $pull: { thoughts: req.params.thoughtId } },
                 { new: true }
             )
             console.log(userData)
@@ -69,7 +68,7 @@ const deleteThought = async (req, res) => {
 
 const createReaction = async (req, res) => {
     try {
-        const reactionData = Thought.findOneAndUpdate(
+        const reactionData = await Thought.findOneAndUpdate(
             { _id: req.params.thoughtId},
             { $addToSet: { reactions: req.body }},
             { runValidators: true, new: true }
@@ -83,7 +82,7 @@ const createReaction = async (req, res) => {
 
 const deleteReaction = async (req, res) => {
     try {
-        const reactionData = Thougth.findOneAndUpdate(
+        const reactionData = await Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
             { $pull: { reactions: { reactionId: req.params.reactionId } } },
             { runValidators: true, new: true }
