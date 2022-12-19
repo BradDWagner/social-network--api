@@ -25,4 +25,4 @@ router
     .post(createFriend)
     .delete(deleteFriend);
 
-module.exports = router
+module.exports = router;
